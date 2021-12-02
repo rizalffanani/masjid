@@ -1,0 +1,154 @@
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class T_jadwal extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('T_jadwal_model');
+        $this->load->library('form_validation');        
+	$this->load->library('datatables');
+    }
+
+    public function index()
+    {
+        $data = array('title' => 't_jadwal');
+        $this->template->load('template','admin/t_jadwal/t_jadwal_list', $data);
+    } 
+    
+    public function json() {
+        header('Content-Type: application/json');
+        echo $this->T_jadwal_model->json();
+    }
+
+    public function read($id) 
+    {
+        $row = $this->T_jadwal_model->get_by_id($id);
+        if ($row) {
+            $data = array(
+                'title' => 'Read',
+		'id_jadwal' => $row->id_jadwal,
+		'tgl' => $row->tgl,
+		'jam' => $row->jam,
+		'nama_kegiatan' => $row->nama_kegiatan,
+		'deskripsi' => $row->deskripsi,
+	    );
+            $this->template->load('template','admin/t_jadwal/t_jadwal_read', $data);
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('admin/t_jadwal'));
+        }
+    }
+
+    public function create() 
+    {
+        $data = array(
+            'title' => 'Create',
+            'button' => 'Create',
+            'action' => site_url('admin/t_jadwal/create_action'),
+	    'id_jadwal' => set_value('id_jadwal'),
+	    'tgl' => set_value('tgl'),
+	    'jam' => set_value('jam'),
+	    'nama_kegiatan' => set_value('nama_kegiatan'),
+	    'deskripsi' => set_value('deskripsi'),
+	);
+        $this->template->load('template','admin/t_jadwal/t_jadwal_form', $data);
+    }
+    
+    public function create_action() 
+    {
+        $this->_rules();
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->create();
+        } else {
+            $data = array(
+		'tgl' => $this->input->post('tgl',TRUE),
+		'jam' => $this->input->post('jam',TRUE),
+		'nama_kegiatan' => $this->input->post('nama_kegiatan',TRUE),
+		'deskripsi' => $this->input->post('deskripsi',TRUE),
+	    );
+
+            $this->T_jadwal_model->insert($data);
+            $this->session->set_flashdata('message', 'Create Record Success');
+            redirect(site_url('admin/t_jadwal'));
+        }
+    }
+    
+    public function update($id) 
+    {
+        $row = $this->T_jadwal_model->get_by_id($id);
+
+        if ($row) {
+            $data = array(
+                'title' => 'Update',
+                'button' => 'Update',
+                'action' => site_url('admin/t_jadwal/update_action'),
+		'id_jadwal' => set_value('id_jadwal', $row->id_jadwal),
+		'tgl' => set_value('tgl', $row->tgl),
+		'jam' => set_value('jam', $row->jam),
+		'nama_kegiatan' => set_value('nama_kegiatan', $row->nama_kegiatan),
+		'deskripsi' => set_value('deskripsi', $row->deskripsi),
+	    );
+            $this->template->load('template','admin/t_jadwal/t_jadwal_form', $data);
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('admin/t_jadwal'));
+        }
+    }
+    
+    public function update_action() 
+    {
+        $this->_rules();
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->update($this->input->post('id_jadwal', TRUE));
+        } else {
+            $data = array(
+		'tgl' => $this->input->post('tgl',TRUE),
+		'jam' => $this->input->post('jam',TRUE),
+		'nama_kegiatan' => $this->input->post('nama_kegiatan',TRUE),
+		'deskripsi' => $this->input->post('deskripsi',TRUE),
+	    );
+
+            $this->T_jadwal_model->update($this->input->post('id_jadwal', TRUE), $data);
+            $this->session->set_flashdata('message', 'Update Record Success');
+            redirect(site_url('admin/t_jadwal'));
+        }
+    }
+    
+    public function delete($id) 
+    {
+        $row = $this->T_jadwal_model->get_by_id($id);
+
+        if ($row) {
+            $this->T_jadwal_model->delete($id);
+            $this->session->set_flashdata('message', 'Delete Record Success');
+            redirect(site_url('admin/t_jadwal'));
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('admin/t_jadwal'));
+        }
+    }
+
+    public function _rules() 
+    {
+	$this->form_validation->set_rules('tgl', 'tgl', 'trim|required');
+	$this->form_validation->set_rules('jam', 'jam', 'trim|required');
+	$this->form_validation->set_rules('nama_kegiatan', 'nama kegiatan', 'trim|required');
+	$this->form_validation->set_rules('deskripsi', 'deskripsi', 'trim|required');
+
+	$this->form_validation->set_rules('id_jadwal', 'id_jadwal', 'trim');
+	$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
+    }
+
+}
+
+/* End of file T_jadwal.php */
+/* Location: ./application/controllers/T_jadwal.php */
+/* Please DO NOT modify this information : */
+/* Generated by Harviacode Codeigniter CRUD Generator 2021-11-13 02:53:32 */
+/* http://harviacode.com */

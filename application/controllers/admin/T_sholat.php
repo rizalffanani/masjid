@@ -1,0 +1,154 @@
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class T_sholat extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('T_sholat_model');
+        $this->load->library('form_validation');        
+	$this->load->library('datatables');
+    }
+
+    public function index()
+    {
+        $data = array('title' => 't_sholat');
+        $this->template->load('template','admin/t_sholat/t_sholat_list', $data);
+    } 
+    
+    public function json() {
+        header('Content-Type: application/json');
+        echo $this->T_sholat_model->json();
+    }
+
+    public function read($id) 
+    {
+        $row = $this->T_sholat_model->get_by_id($id);
+        if ($row) {
+            $data = array(
+                'title' => 'Read',
+		'id_sholat' => $row->id_sholat,
+		'waktu_sholat' => $row->waktu_sholat,
+		'hari' => $row->hari,
+		'imam' => $row->imam,
+		'muadzin' => $row->muadzin,
+	    );
+            $this->template->load('template','admin/t_sholat/t_sholat_read', $data);
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('admin/t_sholat'));
+        }
+    }
+
+    public function create() 
+    {
+        $data = array(
+            'title' => 'Create',
+            'button' => 'Create',
+            'action' => site_url('admin/t_sholat/create_action'),
+	    'id_sholat' => set_value('id_sholat'),
+	    'waktu_sholat' => set_value('waktu_sholat'),
+	    'hari' => set_value('hari'),
+	    'imam' => set_value('imam'),
+	    'muadzin' => set_value('muadzin'),
+	);
+        $this->template->load('template','admin/t_sholat/t_sholat_form', $data);
+    }
+    
+    public function create_action() 
+    {
+        $this->_rules();
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->create();
+        } else {
+            $data = array(
+		'waktu_sholat' => $this->input->post('waktu_sholat',TRUE),
+		'hari' => $this->input->post('hari',TRUE),
+		'imam' => $this->input->post('imam',TRUE),
+		'muadzin' => $this->input->post('muadzin',TRUE),
+	    );
+
+            $this->T_sholat_model->insert($data);
+            $this->session->set_flashdata('message', 'Create Record Success');
+            redirect(site_url('admin/t_sholat'));
+        }
+    }
+    
+    public function update($id) 
+    {
+        $row = $this->T_sholat_model->get_by_id($id);
+
+        if ($row) {
+            $data = array(
+                'title' => 'Update',
+                'button' => 'Update',
+                'action' => site_url('admin/t_sholat/update_action'),
+		'id_sholat' => set_value('id_sholat', $row->id_sholat),
+		'waktu_sholat' => set_value('waktu_sholat', $row->waktu_sholat),
+		'hari' => set_value('hari', $row->hari),
+		'imam' => set_value('imam', $row->imam),
+		'muadzin' => set_value('muadzin', $row->muadzin),
+	    );
+            $this->template->load('template','admin/t_sholat/t_sholat_form', $data);
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('admin/t_sholat'));
+        }
+    }
+    
+    public function update_action() 
+    {
+        $this->_rules();
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->update($this->input->post('id_sholat', TRUE));
+        } else {
+            $data = array(
+		'waktu_sholat' => $this->input->post('waktu_sholat',TRUE),
+		'hari' => $this->input->post('hari',TRUE),
+		'imam' => $this->input->post('imam',TRUE),
+		'muadzin' => $this->input->post('muadzin',TRUE),
+	    );
+
+            $this->T_sholat_model->update($this->input->post('id_sholat', TRUE), $data);
+            $this->session->set_flashdata('message', 'Update Record Success');
+            redirect(site_url('admin/t_sholat'));
+        }
+    }
+    
+    public function delete($id) 
+    {
+        $row = $this->T_sholat_model->get_by_id($id);
+
+        if ($row) {
+            $this->T_sholat_model->delete($id);
+            $this->session->set_flashdata('message', 'Delete Record Success');
+            redirect(site_url('admin/t_sholat'));
+        } else {
+            $this->session->set_flashdata('message', 'Record Not Found');
+            redirect(site_url('admin/t_sholat'));
+        }
+    }
+
+    public function _rules() 
+    {
+	$this->form_validation->set_rules('waktu_sholat', 'waktu sholat', 'trim|required');
+	$this->form_validation->set_rules('hari', 'hari', 'trim|required');
+	$this->form_validation->set_rules('imam', 'imam', 'trim|required');
+	$this->form_validation->set_rules('muadzin', 'muadzin', 'trim|required');
+
+	$this->form_validation->set_rules('id_sholat', 'id_sholat', 'trim');
+	$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
+    }
+
+}
+
+/* End of file T_sholat.php */
+/* Location: ./application/controllers/T_sholat.php */
+/* Please DO NOT modify this information : */
+/* Generated by Harviacode Codeigniter CRUD Generator 2021-11-13 02:59:41 */
+/* http://harviacode.com */
