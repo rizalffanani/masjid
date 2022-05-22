@@ -73,6 +73,7 @@ class Web extends CI_Controller
 
     public function t_keuangan()
     {
+        $this->authclass->check_isvalidated(base_url());
         $this->load->model('T_keuangan_model');
         $row = $this->T_keuangan_model->get_all();
         $kategori = $this->Web_model->get_all_kategori();
@@ -115,6 +116,7 @@ class Web extends CI_Controller
     } 
     public function t_donasi()
     {
+        $this->authclass->check_isvalidated(base_url());
         $this->load->model('T_donasi_model');
         $row = $this->T_donasi_model->get_all();
         $kategori = $this->Web_model->get_all_kategori();
@@ -124,6 +126,16 @@ class Web extends CI_Controller
             'row' => $row,
             'menu' => $menu,
             'kategori' => $kategori,
+            'button' => 'Create',
+            'action' => site_url('admin/t_donasi/create_action'),
+            'id_donasi' => set_value('id_donasi'),
+            'id_user' => set_value('id_user'),
+            'donatur' => set_value('donatur'),
+            'telepon' => set_value('telepon'),
+            'alamat' => set_value('alamat'),
+            'uang' => set_value('uang'),
+            'barang' => set_value('barang'),
+            'ket' => set_value('ket'),
         );
         $this->template->load('front','frontend/t_donasi', $data);
     } 
@@ -169,7 +181,7 @@ class Web extends CI_Controller
 
         $this->template->load('front','frontend/buletin', $data);
     }
-    public function detail($id){
+    public function detail($id) {
         $this->load->model('T_buletin_model');
         $row = $this->T_buletin_model->get_by_id($id);
         $kategori = $this->Web_model->get_all_kategori();
@@ -189,6 +201,25 @@ class Web extends CI_Controller
         );
         $this->template->load('front','frontend/page', $data);
     }
+    function login() {
+        $v= $this->session->userdata("validated");
+        if ($v!=1) {
+            $data['judul'] = 'Login';;           
+            $data['err'] = $this->session->flashdata('flash_msg');
+            $data['val'] = (object)@$this->session->flashdata('backval');
+            $data['t']="log";
+            $this->template->load('front','frontend/login', $data);
+        }else{
+            redirect(site_url('web/login'));
+        }
+    }
+    public function regis() {
+        $data['judul'] = 'Pendafataran';;  
+        $data['errs2'] = $this->session->flashdata('flash_msgi');
+        $data['vals'] = (object)@$this->session->flashdata('users');
+        $data['t']="regis";
+        $this->template->load('front','frontend/login', $data);
+    }   
     public function _rules() 
     {
         $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');

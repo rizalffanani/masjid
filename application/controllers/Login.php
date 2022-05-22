@@ -24,6 +24,8 @@ class Login extends CI_Controller
     }
     public function process()
     {
+        $weblink = $this->security->xss_clean($this->input->post('web'));
+        $direction = ($weblink) ? 'web/login' : 'login';
         $username = $this->security->xss_clean($this->input->post('username'));
         $password = $this->security->xss_clean(md5($this->input->post('password')));
         $this->form_validation->set_rules('username', 'username', 'required');
@@ -32,7 +34,7 @@ class Login extends CI_Controller
         if($this->form_validation->run() == false){
             $this->session->set_flashdata('flash_msgi', err_msg('Mohon Isi Username Dan Password'));
             $this->session->set_flashdata('backval', $post);
-            redirect(site_url('login'));
+            redirect(site_url($direction));
         }
         else{
             $query = $this->Mlogin->validatelvl($username,$password);
@@ -48,21 +50,21 @@ class Login extends CI_Controller
                 );
                 if($query->active == '1'){
                     $this->session->set_userdata($data);
-                    // if ($query->id_aunt==1) {
+                    if ($query->id_aunt==1) {
                         redirect(site_url('admin/dashboard'));
-                    // }else{
-                        // redirect(site_url('web/checkout'));
-                    // }
+                    }else{
+                        redirect(site_url('web/t_donasi'));
+                    }
                 }
                 else{
                     $this->session->set_flashdata('flash_msg', err_msg('Maaf Anda Tidak Di Perbolehkan Masuk, Hubungi Admin Segera'));
                     $this->session->set_flashdata('backval', $post);
-                    redirect(site_url('login'));
+                    redirect(site_url($direction));
                 }
             }else{
                 $this->session->set_flashdata('flash_msg', err_msg('Username Dan Password Salah'));
                 $this->session->set_flashdata('backval', $post);
-                redirect(site_url('login'));
+                redirect(site_url($direction));
             }   
         }
     }
@@ -77,10 +79,12 @@ class Login extends CI_Controller
     public function daftar() 
     {
         // print_r( $this->input->post());exit();
+        $weblink = $this->security->xss_clean($this->input->post('web'));
+        $direction = ($weblink) ? 'web/regis' : 'regis';
+        $directo = ($weblink) ? 'web/login' : 'login';
         $this->form_validation->set_rules('username', 'Username', 'trim|required|alpha_dash|is_unique[users.username]');
         $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_emails|is_unique[users.email]');
         $this->form_validation->set_rules('first_name', 'Nama', 'trim|required');
-        // $this->form_validation->set_rules('nokartuidentitas', 'No Kartu Identitas', 'trim|required|numeric|is_unique[users.nokartuidentitas]');
         $this->form_validation->set_rules('phone', 'Hp', 'trim|required|numeric|min_length[10]');
         $this->form_validation->set_rules('password', 'Password', 'trim|required|matches[passretype]|min_length[6]|max_length[15]');
         $this->form_validation->set_rules('passretype', 'Password 2', 'trim|required|min_length[6]|max_length[15]');
@@ -88,7 +92,7 @@ class Login extends CI_Controller
         if ($this->form_validation->run() == FALSE) {
             $this->session->set_flashdata('flash_msgi', err_msg(validation_errors("<label>", "</label>")));
             $this->session->set_flashdata('users', $post);
-            $this->regis();
+            redirect(site_url($direction));
         } else {
             $user= $this->input->post('username',TRUE);
             $email = $this->input->post('email',TRUE);
@@ -96,8 +100,6 @@ class Login extends CI_Controller
             $pas2 = $this->input->post('passretype',TRUE);
             $date = date("Y-m-d H:i:s");
             $data = array(
-                // 'username' => "user".rand(10,1000),
-                // 'nokartuidentitas' => $this->input->post('nokartuidentitas',TRUE),
                 'username' => $user,
                 'password' => md5($pas1),
                 'email' => $email,
@@ -126,7 +128,7 @@ class Login extends CI_Controller
             $this->Auth_assignment_model->insert($data);
 
             $this->session->set_flashdata('flash_msg', succ_msg('Berhasil melakukan registrasi'));
-            redirect(site_url('login'));
+            redirect(site_url($directo));
         }
     }
     public function next($if="")

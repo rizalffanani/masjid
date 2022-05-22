@@ -89,7 +89,7 @@ class T_donasi extends CI_Controller
         $this->_rules();
 
         if ($this->form_validation->run() == FALSE) {
-            $this->create();
+            redirect(site_url('web/t_donasi'));
         } else {
             $data = array(
     		'id_user' => $this->input->post('id_user',TRUE),
@@ -195,10 +195,10 @@ class T_donasi extends CI_Controller
         if ($row) {
             $this->T_donasi_model->delete($id);
             $this->session->set_flashdata('message', 'Delete Record Success');
-            redirect(site_url('admin/t_donasi'));
+            redirect(site_url('web/t_donasi'));
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url('admin/t_donasi'));
+            redirect(site_url('web/t_donasi'));
         }
     }
 

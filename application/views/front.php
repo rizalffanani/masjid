@@ -44,6 +44,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" type="text/css" href="<?php  echo (base_url());?>assets/edu365/css/responsive_II.css" />
   <!--favicon-->
   <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+  <style type="text/css">
+    .award_btns {
+      margin: 5px !important;
+      padding: 5px 10px !important;
+      font-size: 1em !important;
+      border-radius: 50px !important;
+      border: 1px solid #573744 !important;
+    }
+    .colortheme {      
+      background: -webkit-linear-gradient(left, rgba(116,66,93,1) 0%, rgba(62,46,46,1) 100%);
+    }
+  </style>
 
 </head>
 <body>
@@ -62,7 +74,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </form>
     <div class="container">
       <div class="edu_logo_main_wrapper" style="padding-top: unset;">
-        <a href="#"> 
+        <a href="<?php echo site_url('web') ?>"> 
           <img src="<?php echo base_url(); ?>assets/img/<?= $infoweb->logo_web?>" style="height: 86px;" alt="logo">
         </a>
         <?= $infoweb->nama_web?>
@@ -91,10 +103,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </li>
             <li class="has-mega gc_main_navigation"><a href="#" class="gc_main_navigation hover_color">  Informasi Masjid&nbsp; <i class="fas fa-angle-down"></i></a>
               <ul>
+                <?php if($this->session->userdata("user_id")){?>
                 <li class="parent"><a href="<?php echo site_url('web/t_keuangan') ?>">Laporan Keuangan</a></li>
+                <li class="parent"><a href="<?php echo site_url('web/t_donasi') ?>">Donasi</a>
+                <?php }?>
                 <li class="parent"><a href="<?php echo site_url('web/t_jadwal') ?>">Kegiatan Masjid</a>
                 <li class="parent"><a href="<?php echo site_url('web/t_sholat') ?>">Imam Sholat</a>
-                <li class="parent"><a href="<?php echo site_url('web/t_donasi') ?>">Donasi</a>
                 </li>
               </ul>
             </li>
@@ -103,7 +117,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </li>
             <?php if(!$this->session->userdata("user_id")){?>
             <li class="has-mega gc_main_navigation">
-              <a href="<?php echo site_url('login') ?>" class="gc_main_navigation hover_color">Login</a>
+              <a href="<?php echo site_url('web/login') ?>" class="gc_main_navigation hover_color">Login</a>
             </li>
             <?php }else{?>
             <li class="has-mega gc_main_navigation">

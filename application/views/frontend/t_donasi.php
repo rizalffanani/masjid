@@ -35,6 +35,9 @@
                             </header>
                             <!-- /.entry-header -->
                             <div class="entry-content">
+                                <button type="button" id="donasi-add" class="award_btns colortheme text-light my-3" data-toggle="modal" data-target="#exampleModal"data-backdrop="static" data-keyboard="false">
+                                    Donasi
+                                </button>
                                 <table class="table table-bordered " id="mytable">
                                     <thead class="thead-dark">
                                         <tr>
@@ -44,6 +47,7 @@
                                             <th>Alamat</th>
                                             <th>Uang</th>
                                             <th>Barang</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -55,6 +59,19 @@
                                                 <td><?php echo $users->alamat ?></td>
                                                 <td><?php echo rupiah($users->uang) ?></td>
                                                 <td><?php echo $users->barang ?></td>
+                                                <td style="text-align:center" width="200px">
+                                                <?php 
+                                                if ($this->session->userdata("id")==$users->id_user) {
+                                                    // echo anchor(site_url('admin/t_donasi/update/'.$users->id_donasi),'Update'); 
+                                                    // echo ' | '; 
+                                                    echo anchor(site_url('admin/t_donasi/preview/'.$users->id_donasi),'Preview'); 
+                                                    echo ' | '; 
+                                                    echo anchor(site_url('admin/t_donasi/cetak/'.$users->id_donasi),'Cetak'); 
+                                                    echo ' | '; 
+                                                    echo anchor(site_url('admin/t_donasi/delete/'.$users->id_donasi),'Delete','onclick="javasciprt: return confirm(\'Are You Sure ?\')"'); 
+                                                }
+                                                ?>
+                                                </td>
                                            </tr>
                                         <?php }?>
                                     </tbody>
@@ -122,3 +139,67 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Silahkan Masukkan Donasi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="<?php echo $action; ?>" method="post">
+                    <div class="modal-body">            
+                        <input type="hidden" class="form-control" name="id_user" id="id_user" placeholder="Id User" value="<?php echo $this->session->userdata("id"); ?>" />
+                        <div class="form-group">
+                            <label for="varchar">Donatur <?php echo form_error('donatur') ?></label>
+                            <input type="text" class="form-control" name="donatur" id="donatur" placeholder="Donatur" value="<?php echo $donatur; ?>" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="varchar">Telepon <?php echo form_error('telepon') ?></label>
+                            <input type="number" class="form-control" name="telepon" id="telepon" placeholder="Telepon" value="<?php echo $telepon; ?>" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="alamat">Alamat <?php echo form_error('alamat') ?></label>
+                            <textarea class="form-control" rows="3" name="alamat" id="alamat" placeholder="Alamat" required><?php echo $alamat; ?></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="varchar">Uang <?php echo form_error('uang') ?></label>
+                            <input type="number" class="form-control" name="uang" id="uang" placeholder="Uang" value="<?php echo $uang; ?>" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="varchar">Barang <?php echo form_error('barang') ?></label>
+                            <input type="text" class="form-control" name="barang" id="barang" placeholder="Barang" value="<?php echo $barang; ?>" required/>
+                        </div>
+                        <div class="form-group">
+                            <label for="ket">Ket <?php echo form_error('ket') ?></label>
+                            <textarea class="form-control" rows="3" name="ket" id="ket" placeholder="Ket"><?php echo $ket; ?></textarea>
+                        </div>
+                        <input type="hidden" name="id_donasi" value="<?php echo $id_donasi; ?>" /> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="award_btns close" data-dismiss="modal">Close</button>
+                        <button type="submit" class="award_btns colortheme text-light" >Save changes</button>
+                    </div>        
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $("#donasi-add").click(function(e) {
+            e.preventDefault();
+            $('.svgclippaths').css({
+                'overflow': 'hidden',
+                'max-height': '100%'
+            });
+        });
+        $(".close").click(function(e) {
+            e.preventDefault();
+            $('.svgclippaths').css({
+                'overflow': 'auto',
+                'max-height': 'unset'
+            });
+        });
+    </script>
