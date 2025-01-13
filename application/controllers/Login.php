@@ -1,15 +1,17 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 class Login extends CI_Controller
 {
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
         $this->load->library('session');
         $this->load->model('Info_model');
         $this->load->model('Mlogin');
     }
-    function index()
+    public function index()
     {
         $v= $this->session->userdata("validated");
         if ($v!=1) {
@@ -18,7 +20,7 @@ class Login extends CI_Controller
             $data['val'] = (object)@$this->session->flashdata('backval');
             $data['t']="log";
             $this->load->view('admin/auth/login', $data);
-        }else{
+        } else {
             redirect(site_url('admin/dashboard'));
         }
     }
@@ -31,14 +33,13 @@ class Login extends CI_Controller
         $this->form_validation->set_rules('username', 'username', 'required');
         $this->form_validation->set_rules('password', 'password', 'required');
         $post = $this->input->post();
-        if($this->form_validation->run() == false){
+        if($this->form_validation->run() == false) {
             $this->session->set_flashdata('flash_msgi', err_msg('Mohon Isi Username Dan Password'));
             $this->session->set_flashdata('backval', $post);
             redirect(site_url($direction));
-        }
-        else{
-            $query = $this->Mlogin->validatelvl($username,$password);
-            if(!empty($query)){
+        } else {
+            $query = $this->Mlogin->validatelvl($username, $password);
+            if(!empty($query)) {
                 $data = array(
                     'id' => $query->id,
                     'user_id' => $query->username,
@@ -48,24 +49,23 @@ class Login extends CI_Controller
                     'lvl' => $query->id_aunt,
                     'validated' => true
                 );
-                if($query->active == '1'){
+                if($query->active == '1') {
                     $this->session->set_userdata($data);
                     if ($query->id_aunt==1) {
                         redirect(site_url('admin/dashboard'));
-                    }else{
-                        redirect(site_url('web/t_donasi'));
+                    } else {
+                        redirect(site_url('admin/dashboard'));
                     }
-                }
-                else{
+                } else {
                     $this->session->set_flashdata('flash_msg', err_msg('Maaf Anda Tidak Di Perbolehkan Masuk, Hubungi Admin Segera'));
                     $this->session->set_flashdata('backval', $post);
                     redirect(site_url($direction));
                 }
-            }else{
+            } else {
                 $this->session->set_flashdata('flash_msg', err_msg('Username Dan Password Salah'));
                 $this->session->set_flashdata('backval', $post);
                 redirect(site_url($direction));
-            }   
+            }
         }
     }
     public function regis()
@@ -75,8 +75,8 @@ class Login extends CI_Controller
         $data['vals'] = (object)@$this->session->flashdata('users');
         $data['t']="regis";
         $this->load->view('admin/auth/login', $data);
-    }       
-    public function daftar() 
+    }
+    public function daftar()
     {
         // print_r( $this->input->post());exit();
         $weblink = $this->security->xss_clean($this->input->post('web'));
@@ -89,26 +89,26 @@ class Login extends CI_Controller
         $this->form_validation->set_rules('password', 'Password', 'trim|required|matches[passretype]|min_length[6]|max_length[15]');
         $this->form_validation->set_rules('passretype', 'Password 2', 'trim|required|min_length[6]|max_length[15]');
         $post = $this->input->post();
-        if ($this->form_validation->run() == FALSE) {
+        if ($this->form_validation->run() == false) {
             $this->session->set_flashdata('flash_msgi', err_msg(validation_errors("<label>", "</label>")));
             $this->session->set_flashdata('users', $post);
             redirect(site_url($direction));
         } else {
-            $user= $this->input->post('username',TRUE);
-            $email = $this->input->post('email',TRUE);
-            $pas1 = $this->input->post('password',TRUE);
-            $pas2 = $this->input->post('passretype',TRUE);
+            $user= $this->input->post('username', true);
+            $email = $this->input->post('email', true);
+            $pas1 = $this->input->post('password', true);
+            $pas2 = $this->input->post('passretype', true);
             $date = date("Y-m-d H:i:s");
             $data = array(
                 'username' => $user,
                 'password' => md5($pas1),
                 'email' => $email,
-                'first_name' => $this->input->post('first_name',TRUE),
-                'phone' => $this->input->post('phone',TRUE),
+                'first_name' => $this->input->post('first_name', true),
+                'phone' => $this->input->post('phone', true),
                 'Foto' => 'default.png',
                 'active' => '1',
             );
-            $this->Mlogin->inserttabel('users',$data);
+            $this->Mlogin->inserttabel('users', $data);
             $ida= $this->db->insert_id();
 
             $data2 = array(
@@ -116,7 +116,7 @@ class Login extends CI_Controller
                 'ip_address' => $this->input->ip_address(),
                 'created_on' => $date,
             );
-            $this->Mlogin->inserttabel('users_detail',$data2);
+            $this->Mlogin->inserttabel('users_detail', $data2);
 
             $data = array(
                 'id_aunt' => '3',
@@ -138,35 +138,35 @@ class Login extends CI_Controller
             $regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/';
             if (preg_match($regex, $email)) {
                 $query = $this->Mlogin->get_by_email($email);
-                if(!empty($query)){
+                if(!empty($query)) {
                     echo "true";
                 }
-            }else{
+            } else {
                 echo "true2";
             }
-        }elseif ($if=="next3") {
+        } elseif ($if=="next3") {
             $username = $this->security->xss_clean($this->input->post('usernamep'));
-            if (preg_match('/^[a-z\d_.]{6,20}$/i', $username) ){
+            if (preg_match('/^[a-z\d_.]{6,20}$/i', $username)) {
                 $query = $this->Mlogin->get_by_id($username);
-                if(!empty($query)){
+                if(!empty($query)) {
                     echo "true";
                 }
-            }else{
+            } else {
                 echo "true2";
             }
-        }elseif ($if=="next4") {
+        } elseif ($if=="next4") {
             $password = $this->security->xss_clean($this->input->post('password'));
-            if (!preg_match('/^[a-z\d]{6,20}$/i', $password)){
+            if (!preg_match('/^[a-z\d]{6,20}$/i', $password)) {
                 echo "true";
             }
         }
-        
+
     }
-    public function emailkonf($ida,$email)
+    public function emailkonf($ida, $email)
     {
         //enkripsi id
         $encrypted_id = md5($ida);
-        if(!empty($encrypted_id)){
+        if(!empty($encrypted_id)) {
             // Konfigurasi email
             $config = [
                    'mailtype'  => 'html',
@@ -179,44 +179,43 @@ class Login extends CI_Controller
                    'crlf'      => "\r\n",
                    'newline'   => "\r\n"
                ];
-    
+
             // Load library email dan konfigurasinya
             $this->load->library('email', $config);
-    
+
             // Email dan nama pengirim
             $this->email->from('admin@jm.rumahrahil.com', 'Admin Jowo Messenger.com');
-    
+
             // Email penerima
             $this->email->to($email);// Ganti dengan email tujuan kamu
-    
+
             // Lampiran email, isi dengan url/path file
             // $this->email->attach('https://masrud.com/content/images/20181215150137-codeigniter-smtp-gmail.png');
-    
+
             // Subject email
             $this->email->subject("Verifikasi Akun");
-    
+
             // Isi email
             $this->email->message(
-                 "terimakasih telah melakuan registrasi, untuk memverifikasi silahkan klik tautan dibawah ini<br><br>".
-                  site_url("login/verification/$encrypted_id"));
-                      
-            if($this->email->send())
-            {
-               $this->session->set_flashdata('flash_msg', 'Berhasil melakukan registrasi, silahkan cek email kamu');
-            }else
-            {
+                "terimakasih telah melakuan registrasi, untuk memverifikasi silahkan klik tautan dibawah ini<br><br>".
+                  site_url("login/verification/$encrypted_id")
+            );
+
+            if($this->email->send()) {
+                $this->session->set_flashdata('flash_msg', 'Berhasil melakukan registrasi, silahkan cek email kamu');
+            } else {
                 $this->session->set_flashdata('flash_msg', 'Berhasil melakukan registrasi, namu gagal mengirim verifikasi email');
             }
         }
     }
     public function verification($key)
     {
-         $this->load->helper('url');
-         $this->Mlogin->changeActiveState($key);
-         echo "Selamat kamu telah memverifikasi akun kamu";
-         echo "<br><br><a href='".site_url("login")."'>Kembali ke Menu Login</a>";
+        $this->load->helper('url');
+        $this->Mlogin->changeActiveState($key);
+        echo "Selamat kamu telah memverifikasi akun kamu";
+        echo "<br><br><a href='".site_url("login")."'>Kembali ke Menu Login</a>";
     }
-    function forget()
+    public function forget()
     {
         $data['errf'] = $this->session->flashdata('flash_msgw');
         $data['valf'] = (object)@$this->session->flashdata('backvalw');
@@ -224,35 +223,35 @@ class Login extends CI_Controller
         $data['captcha'] = $this->recaptcha->getWidget(); // menampilkan recaptcha
         $data['script_captcha'] = $this->recaptcha->getScriptTag();
         $this->load->view('admin/auth/login', $data);
-    }        
-    function forgeten()
+    }
+    public function forgeten()
     {
         $username = $this->security->xss_clean($this->input->post('username'));
         $this->form_validation->set_rules('username', 'Username', 'trim|required');
         $post = $this->input->post();
         $recaptcha = $this->input->post('g-recaptcha-response');
         $response = $this->recaptcha->verifyResponse($recaptcha);
-        if ($this->form_validation->run() == FALSE || !isset($response['success']) || $response['success'] <> true) {
+        if ($this->form_validation->run() == false || !isset($response['success']) || $response['success'] <> true) {
             $this->session->set_flashdata('flash_msgw', 'Mohon Isi Username');
             $this->session->set_flashdata('backvalw', $post);
             $this->forget();
         } else {
             $query = $this->Mlogin->get_by_id($username);
-            if(!empty($query)){
+            if(!empty($query)) {
                 $data = array(
                 'forgotten_password_time' => date("Y-m-d H:i:s"),
                 );
                 $this->Mlogin->update($query->id, $data);
-                $queail = substr($query->email,0,3)."******@*****".substr($query->email,-4);
+                $queail = substr($query->email, 0, 3)."******@*****".substr($query->email, -4);
                 $this->session->set_flashdata('flash_msgw', 'cek email anda '.$queail);
                 $this->forget();
-            }else{
+            } else {
                 $this->session->set_flashdata('flash_msgw', 'Username Salah');
                 $this->session->set_flashdata('backvalw', $post);
                 $this->forget();
-            } 
+            }
         }
-    }    
+    }
     public function logout()
     {
         $this->session->sess_destroy();
