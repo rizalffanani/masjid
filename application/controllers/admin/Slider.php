@@ -131,7 +131,7 @@ class Slider extends CI_Controller
             'upload_path' => 'gambar/slider',
             'allowed_types' => 'jpg|jpeg|png',
             'file_name' => rand(10,1000).'file_'.date('dmYHis'),
-            'overwrite' => FALSE,
+            'overwrite' => TRUE,
             'max_size' => 2048,   
             'file_ext_tolower' => TRUE,    
             'max_filename' => 0,
