@@ -17,10 +17,11 @@
             <th>Date</th>
             <th>Product</th>
             <th>Type</th>
+            <th>Direction</th>
             <th>Qty</th>
-            <th>Before</th>
-            <th>After</th>
-            <th>Id</th>
+            <!-- <th>Before</th> -->
+            <!-- <th>After</th> -->
+            <!-- <th>Id</th> -->
             <th>Detail Order</th>
             <th width="200px">Action</th>
         </tr>
@@ -76,12 +77,16 @@ $(document).ready(function() {
             }, {
                 "data": "qty"
             }, {
-                "data": "before"
-            }, {
-                "data": "after"
-            }, {
-                "data": "id"
-            }, {
+                "data": "direction"
+            },
+            // {
+            //     "data": "before"
+            // }, {
+            //     "data": "after"
+            // }, {
+            //     "data": "id"
+            // },
+            {
                 "data": "detail_order"
             },
             {

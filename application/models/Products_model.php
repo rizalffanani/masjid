@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('BASEPATH'))
+if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
+}
 
 class Products_model extends CI_Model
 {
@@ -10,75 +11,78 @@ class Products_model extends CI_Model
     public $id = 'id_product';
     public $order = 'DESC';
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
     }
 
     // datatables
-    function json() {
+    public function json()
+    {
         $this->datatables->select('id_product,sku,name_product,detail_product,stock,id_shop');
         $this->datatables->from('products');
         //add this line for join
         //$this->datatables->join('table2', 'products.field = table2.field');
-        $this->datatables->add_column('action', anchor(site_url('admin/products/read/$1'),'Read')." | ".anchor(site_url('admin/products/update/$1'),'Update')." | ".anchor(site_url('admin/products/delete/$1'),'Delete','onclick="javasciprt: return confirm(\'Are You Sure ?\')"'), 'id_product');
+        $this->datatables->add_column('action', anchor(site_url('admin/products/read/$1'), 'Read')." | ".anchor(site_url('admin/products/update/$1'), 'Update')." | ".anchor(site_url('admin/products/delete/$1'), 'Delete', 'onclick="javasciprt: return confirm(\'Are You Sure ?\')"'), 'id_product');
         return $this->datatables->generate();
     }
 
     // get all
-    function get_all()
+    public function get_all()
     {
         $this->db->order_by($this->id, $this->order);
         return $this->db->get($this->table)->result();
     }
 
     // get data by id
-    function get_by_id($id)
+    public function get_by_id($id)
     {
         $this->db->where($this->id, $id);
         return $this->db->get($this->table)->row();
     }
-    
+
     // get total rows
-    function total_rows($q = NULL) {
+    public function total_rows($q = null)
+    {
         $this->db->like('id_product', $q);
-	$this->db->or_like('sku', $q);
-	$this->db->or_like('name_product', $q);
-	$this->db->or_like('detail_product', $q);
-	$this->db->or_like('stock', $q);
-	$this->db->or_like('id_shop', $q);
-	$this->db->from($this->table);
+        $this->db->or_like('sku', $q);
+        $this->db->or_like('name_product', $q);
+        $this->db->or_like('detail_product', $q);
+        $this->db->or_like('stock', $q);
+        $this->db->or_like('id_shop', $q);
+        $this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
     // get data with limit and search
-    function get_limit_data($limit, $start = 0, $q = NULL) {
+    public function get_limit_data($limit, $start = 0, $q = null)
+    {
         $this->db->order_by($this->id, $this->order);
         $this->db->like('id_product', $q);
-	$this->db->or_like('sku', $q);
-	$this->db->or_like('name_product', $q);
-	$this->db->or_like('detail_product', $q);
-	$this->db->or_like('stock', $q);
-	$this->db->or_like('id_shop', $q);
-	$this->db->limit($limit, $start);
+        $this->db->or_like('sku', $q);
+        $this->db->or_like('name_product', $q);
+        $this->db->or_like('detail_product', $q);
+        $this->db->or_like('stock', $q);
+        $this->db->or_like('id_shop', $q);
+        $this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }
 
     // insert data
-    function insert($data)
+    public function insert($data)
     {
         $this->db->insert($this->table, $data);
     }
 
     // update data
-    function update($id, $data)
+    public function update($id, $data)
     {
         $this->db->where($this->id, $id);
         $this->db->update($this->table, $data);
     }
 
     // delete data
-    function delete($id)
+    public function delete($id)
     {
         $this->db->where($this->id, $id);
         $this->db->delete($this->table);

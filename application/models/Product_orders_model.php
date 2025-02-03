@@ -19,7 +19,7 @@ class Product_orders_model extends CI_Model
     // datatables
     public function json()
     {
-        $this->datatables->select('products.id_product, name_product, product_orders.id_product_order,type_order,qty,before,after,date,id,detail_order');
+        $this->datatables->select('products.id_product, name_product, product_orders.id_product_order,type_order,direction,qty,before,after,date,id,detail_order');
         $this->datatables->from('product_orders');
         //add this line for join
         $this->datatables->join('products', 'product_orders.id_product = products.id_product');
