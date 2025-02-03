@@ -34,7 +34,7 @@
     <div class="row">
         <div class="col-6">
             <div class="form-group">
-                <label for="int">Product <?php echo form_error('id_product') ?></label>
+                <label for="int">Product <?php echo($i+1).' '.form_error('id_product') ?></label>
                 <?php echo cmb_dinamis('id_product[]', 'products', 'name_product', 'id_product', $id_product) ?>
             </div>
         </div>
